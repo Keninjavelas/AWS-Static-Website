@@ -1,112 +1,136 @@
-# ☁️ AWS Static Website Hosting Project
+# ☁️ AWS Static Website Deployment – Phase 1 & 2
 
-### 🚀 Project Overview
-
-This project demonstrates how to host and distribute a **static website** using **Amazon S3** and **Amazon CloudFront** — two of the most commonly used AWS services for scalable and cost-efficient web hosting.
-
-It’s the first step in my cloud learning journey, showing hands-on experience with **core AWS infrastructure** concepts like storage, access control, and global content delivery.
+![Screenshot](./Screen.png)
 
 ---
 
-### 🧱 Architecture Overview
+## 🧭 Project Overview
 
-**Services Used:**
+This project demonstrates how to deploy a **static website on AWS** using **Amazon S3**, **CloudFront**, and **GitHub Actions CI/CD**.
+It is part of my hands-on AWS learning path toward becoming a **Cloud Engineer / DevOps Engineer**.
 
-* **Amazon S3** – Stores and serves static files (`index.html`, CSS, images, etc.)
-* **Amazon CloudFront** – Content Delivery Network (CDN) to cache and deliver content globally
-* **AWS IAM** – Manages access permissions to the S3 bucket
-* **AWS Route 53** *(optional)* – Can be used later for a custom domain
-* **AWS Certificate Manager (ACM)** *(optional)* – Enables HTTPS for custom domains
+---
 
-**Architecture Diagram:**
+## 🚀 Features Implemented
+
+### **Phase 1 – Static Website Hosting**
+
+* Hosted HTML/CSS/JS website in **Amazon S3**
+* Enabled **Static Website Hosting**
+* Set proper **Bucket Policy** for public read access
+* Verified via S3 website endpoint
+  → `http://my-first-aws-site-aryan.s3-website-us-east-1.amazonaws.com/`
+
+### **Phase 2 – Global Distribution + Automation**
+
+* Added **Amazon CloudFront CDN** in front of S3 for:
+
+  * Faster global delivery
+  * HTTPS + SSL encryption (via ACM)
+* Configured **GitHub Actions** for automatic deployment:
+
+  * On every push to `main` branch
+  * Syncs repo files to S3
+  * Automatically **invalidates CloudFront cache**
+* Created a dedicated **IAM user** for GitHub Actions with:
+
+  * `AmazonS3FullAccess`
+  * `AmazonCloudFrontFullAccess`
+* Stored credentials securely as **GitHub Secrets**
+
+---
+
+## 🧩 Architecture Diagram
 
 ```
-[User Browser]
-      │
+Developer (GitHub)
+      |
+      |  Push to main branch
       ▼
-[Amazon CloudFront Distribution]
-      │
+GitHub Actions (CI/CD)
+      |
+      |  AWS Credentials (IAM User)
       ▼
-[Amazon S3 Bucket (Static Website Hosting)]
+Amazon S3 (Static Website)
+      |
+      |  Origin
+      ▼
+Amazon CloudFront (Global CDN)
+      |
+      ▼
+End User (Browser)
 ```
 
 ---
 
-### 🧰 Tech Stack
+## ⚙️ Deployment Pipeline Details
 
-* **HTML5**, **CSS3**, **JavaScript**
-* **Amazon S3** (Static Hosting)
-* **Amazon CloudFront** (Global CDN)
-* **AWS Management Console**
-
----
-
-### ⚙️ Steps to Deploy
-
-1. **Create S3 Bucket**
-
-   * Bucket name: `my-first-aws-site-aryan`
-   * Disable “Block all public access”
-   * Upload website files (`index.html`, `style.css`, etc.)
-   * Enable **Static website hosting**
-     → Choose “Use this bucket to host a website”
-     → Index document: `index.html`
-
-2. **Set Bucket Policy**
-
-   ```json
-   {
-     "Version": "2012-10-17",
-     "Statement": [
-       {
-         "Sid": "PublicReadGetObject",
-         "Effect": "Allow",
-         "Principal": "*",
-         "Action": "s3:GetObject",
-         "Resource": "arn:aws:s3:::my-first-aws-site-aryan/*"
-       }
-     ]
-   }
-   ```
-
-3. **Test Website (S3 URL)**
-
-   * Example: `http://my-first-aws-site-aryan.s3-website-us-east-1.amazonaws.com/`
-
-4. **Create CloudFront Distribution**
-
-   * Origin domain: select your **S3 website endpoint**
-   * Viewer protocol policy: **Redirect HTTP to HTTPS**
-   * Default root object: `index.html`
-   * Wait for deployment (~10–15 minutes)
-
-5. **Access via CloudFront URL**
-
-   * Example: `https://d78vjzv8z61e6.cloudfront.net/`
+| Step | Description                                |
+| ---- | ------------------------------------------ |
+| 1️⃣  | Commit & push code to GitHub               |
+| 2️⃣  | GitHub Actions workflow runs automatically |
+| 3️⃣  | Files synced to S3 bucket                  |
+| 4️⃣  | CloudFront cache invalidated               |
+| 5️⃣  | Updated site instantly available worldwide |
 
 ---
 
-### 🌎 Outcome
+## 🛡️ Security & Access Management
 
-✅ Fully hosted website on AWS
-✅ Globally distributed via CloudFront CDN
-✅ HTTPS-enabled, highly scalable, and cost-efficient
-✅ Demonstrates knowledge of core AWS concepts (S3, CloudFront, IAM)
-
----
-
-### 📈 Future Enhancements
-
-* Add **custom domain** via Route 53 + ACM certificate
-* Automate deployment using **GitHub Actions** or **CodePipeline**
-* Integrate **CloudWatch** for access logs and monitoring
+* Least-privilege IAM user created specifically for CI/CD
+* AWS credentials **never hardcoded** in codebase
+* Secrets stored in GitHub > Settings > Secrets > Actions
+* HTTPS enabled through **AWS Certificate Manager (ACM)**
 
 ---
 
-### 🧑‍💻 Author
+## 📈 Current Architecture Components
+
+| AWS Service                       | Purpose                           |
+| --------------------------------- | --------------------------------- |
+| **Amazon S3**                     | Static website hosting            |
+| **Amazon CloudFront**             | Global CDN and HTTPS              |
+| **AWS IAM**                       | Access control for GitHub Actions |
+| **GitHub Actions**                | Continuous deployment automation  |
+| **AWS Certificate Manager (ACM)** | SSL/TLS certificate (in progress) |
+
+---
+
+## 🧠 Learnings & Outcomes
+
+* Understood S3 bucket policies and public access controls
+* Practiced IAM roles, access keys, and secrets management
+* Gained hands-on experience with CloudFront distribution setup
+* Implemented real-world CI/CD with GitHub Actions
+* Built foundational AWS project for cloud portfolio
+
+---
+
+## 🏗️ Next Phase – Monitoring & Security
+
+Coming soon (Phase 3):
+
+* **CloudWatch Metrics & Alarms** for uptime/error monitoring
+* **AWS Budgets** for cost tracking
+* Optional: **WAF demo** to test basic security filters
+* HTTPS Certificate activation (ACM)
+
+---
+
+## 📚 Technologies Used
+
+* **AWS S3**
+* **AWS CloudFront**
+* **AWS IAM**
+* **AWS Certificate Manager**
+* **GitHub Actions**
+* **HTML / CSS / JavaScript**
+
+---
+
+## 👨‍💻 Author
 
 **Aryan Kapoor**
-AWS Cloud Learner | Aspiring Cloud/DevOps Engineer
-📚 Currently pursuing AWS Cloud Practitioner Certification
+Cloud Computing Student | AWS Learner | Aspiring Cloud/DevOps Engineer
 
----
+Connect: [LinkedIn Profile (Coming Soon)](https://www.linkedin.com/)

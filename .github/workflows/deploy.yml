@@ -1,0 +1,31 @@
+name: Deploy to S3 + CloudFront Invalidation
+
+on:
+  push:
+    branches:
+      - main  # change to 'master' if your repo uses that
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # change if your bucket is in another region
+
+      - name: Sync files to S3
+        run: |
+          aws s3 sync . s3://my-first-aws-site-aryan --delete --exclude ".git/*" --exclude ".github/*"
+
+      - name: Create CloudFront cache invalidation
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E1IV4CZ586FDEG \
+            --paths "/*"

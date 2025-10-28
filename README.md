@@ -1,136 +1,133 @@
-# ☁️ AWS Static Website Deployment – Phase 1 & 2
+# ☁️ AWS Static Website Deployment — End-to-End Project (Phases 1–3)
 
-![Screenshot](./Screenshot.png)
+## 📘 Overview
 
----
-
-## 🧭 Project Overview
-
-This project demonstrates how to deploy a **static website on AWS** using **Amazon S3**, **CloudFront**, and **GitHub Actions CI/CD**.
-It is part of my hands-on AWS learning path toward becoming a **Cloud Engineer / DevOps Engineer**.
+This project demonstrates how to build, host, and monitor a **secure, scalable, and cost-efficient static website** on AWS — all within the **free tier**.
+It’s part of a long-term learning journey toward mastering **AWS Cloud Engineering** and building a professional cloud portfolio.
 
 ---
 
-## 🚀 Features Implemented
+## 🏗️ Architecture Summary
 
-### **Phase 1 – Static Website Hosting**
-
-* Hosted HTML/CSS/JS website in **Amazon S3**
-* Enabled **Static Website Hosting**
-* Set proper **Bucket Policy** for public read access
-* Verified via S3 website endpoint
-  → `http://my-first-aws-site-aryan.s3-website-us-east-1.amazonaws.com/`
-
-### **Phase 2 – Global Distribution + Automation**
-
-* Added **Amazon CloudFront CDN** in front of S3 for:
-
-  * Faster global delivery
-  * HTTPS + SSL encryption (via ACM)
-* Configured **GitHub Actions** for automatic deployment:
-
-  * On every push to `main` branch
-  * Syncs repo files to S3
-  * Automatically **invalidates CloudFront cache**
-* Created a dedicated **IAM user** for GitHub Actions with:
-
-  * `AmazonS3FullAccess`
-  * `AmazonCloudFrontFullAccess`
-* Stored credentials securely as **GitHub Secrets**
+| Phase       | Focus                                | AWS Services Used                          | Key Skills                       |
+| ----------- | ------------------------------------ | ------------------------------------------ | -------------------------------- |
+| **Phase 1** | Hosting a Static Website             | S3, Route53 (optional)                     | Website hosting, bucket policies |
+| **Phase 2** | Global Content Delivery & Automation | CloudFront, GitHub Actions, IAM            | CDN, HTTPS, CI/CD pipeline       |
+| **Phase 3** | Monitoring & Resiliency              | CloudFront Logs, S3 Versioning, CloudWatch | Logging, versioning, metrics     |
 
 ---
 
-## 🧩 Architecture Diagram
+# 🧩 Phase 3 — Monitoring, Logging & Versioning
+
+## 📊 Overview
+
+Phase 3 introduces observability and resiliency to our AWS static website architecture.
+We’ve added **CloudFront access logging**, **S3 versioning**, and **metrics monitoring** to ensure visibility, traceability, and recovery capabilities.
+
+---
+
+## ⚙️ Features Implemented
+
+### **1️⃣ CloudFront Access Logging**
+
+* Created a dedicated **log bucket** (`my-first-aws-site-logs`) for storing access logs.
+* Configured a **Standard Log Destination** in CloudFront to deliver `.gz` log files automatically to the log bucket.
+* Added optional log prefix: `cloudfront-logs/`
+* Disabled **Real-Time Logs** (paid feature) to stay within free-tier limits.
+
+**Result:**
+Traffic and request data are now recorded in the logs bucket for analysis and audits.
+
+---
+
+### **2️⃣ S3 Versioning**
+
+Enabled versioning for both S3 buckets:
+
+* ✅ `my-first-aws-site-aryan` (main static website)
+* ✅ `my-first-aws-site-logs` (log storage)
+
+**Benefit:**
+Every object change is preserved as a new version.
+You can restore previous versions of files if they’re accidentally modified or deleted.
+
+---
+
+### **3️⃣ Monitoring & Metrics**
+
+* Accessed **CloudFront → Monitoring tab** to view metrics such as:
+
+  * Requests count
+  * Data transferred
+  * 4xx/5xx error rates
+  * Cache hit ratio
+* Linked CloudFront metrics to **CloudWatch** for deeper insights.
+
+**Screenshots:**
+
+![Metrics Dashboard](./Metrics.png)
+![Setup Screenshot](./Screenshot.png)
+
+---
+
+## 🧠 Lessons Learned
+
+* CloudFront’s **Logging tab** is now separate in the new AWS console.
+* Choose **Amazon S3 (not S3 Legacy)** when creating access log destinations.
+* Real-time logs are optional and cost extra; standard logs are perfect for free-tier setups.
+* S3 versioning adds rollback safety and enhances operational reliability.
+
+---
+
+## ✅ Phase 3 Summary
+
+| Component          | Status    | Notes                              |
+| ------------------ | --------- | ---------------------------------- |
+| CloudFront Logging | ✅ Enabled | Logs to `my-first-aws-site-logs`   |
+| S3 Versioning      | ✅ Enabled | Both main & logs buckets           |
+| Metrics Monitoring | ✅ Active  | CloudFront & CloudWatch integrated |
+
+---
+
+## 🧾 Repository Structure
 
 ```
-Developer (GitHub)
-      |
-      |  Push to main branch
-      ▼
-GitHub Actions (CI/CD)
-      |
-      |  AWS Credentials (IAM User)
-      ▼
-Amazon S3 (Static Website)
-      |
-      |  Origin
-      ▼
-Amazon CloudFront (Global CDN)
-      |
-      ▼
-End User (Browser)
+├── index.html
+├── styles.css
+├── scripts.js
+├── Screen.png
+├── Metrics.png
+├── Screenshot.png
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── README.md
 ```
 
 ---
 
-## ⚙️ Deployment Pipeline Details
+## 🚀 What’s Next — Phase 4
 
-| Step | Description                                |
-| ---- | ------------------------------------------ |
-| 1️⃣  | Commit & push code to GitHub               |
-| 2️⃣  | GitHub Actions workflow runs automatically |
-| 3️⃣  | Files synced to S3 bucket                  |
-| 4️⃣  | CloudFront cache invalidated               |
-| 5️⃣  | Updated site instantly available worldwide |
+The next step focuses on **security and automation**:
 
----
-
-## 🛡️ Security & Access Management
-
-* Least-privilege IAM user created specifically for CI/CD
-* AWS credentials **never hardcoded** in codebase
-* Secrets stored in GitHub > Settings > Secrets > Actions
-* HTTPS enabled through **AWS Certificate Manager (ACM)**
+* Implementing **IAM hardening**
+* Setting up **CloudFront OAI/OAC** for secure bucket access
+* Adding **AWS WAF** for protection from common attacks
+* Optionally integrating automated security scans in the pipeline
 
 ---
 
-## 📈 Current Architecture Components
+## 💡 Skills Demonstrated
 
-| AWS Service                       | Purpose                           |
-| --------------------------------- | --------------------------------- |
-| **Amazon S3**                     | Static website hosting            |
-| **Amazon CloudFront**             | Global CDN and HTTPS              |
-| **AWS IAM**                       | Access control for GitHub Actions |
-| **GitHub Actions**                | Continuous deployment automation  |
-| **AWS Certificate Manager (ACM)** | SSL/TLS certificate (in progress) |
-
----
-
-## 🧠 Learnings & Outcomes
-
-* Understood S3 bucket policies and public access controls
-* Practiced IAM roles, access keys, and secrets management
-* Gained hands-on experience with CloudFront distribution setup
-* Implemented real-world CI/CD with GitHub Actions
-* Built foundational AWS project for cloud portfolio
+* AWS S3 Website Hosting
+* CloudFront Distribution & Caching
+* CI/CD via GitHub Actions
+* Access Logging & Monitoring
+* Infrastructure Hardening
+* Cost Optimization (Free Tier Compliance)
 
 ---
 
-## 🏗️ Next Phase – Monitoring & Security
+## 📜 License
 
-Coming soon (Phase 3):
-
-* **CloudWatch Metrics & Alarms** for uptime/error monitoring
-* **AWS Budgets** for cost tracking
-* Optional: **WAF demo** to test basic security filters
-* HTTPS Certificate activation (ACM)
-
----
-
-## 📚 Technologies Used
-
-* **AWS S3**
-* **AWS CloudFront**
-* **AWS IAM**
-* **AWS Certificate Manager**
-* **GitHub Actions**
-* **HTML / CSS / JavaScript**
-
----
-
-## 👨‍💻 Author
-
-**Aryan Kapoor**
-Cloud Computing Student | AWS Learner | Aspiring Cloud/DevOps Engineer
-
-Connect: [LinkedIn Profile (Coming Soon)](https://www.linkedin.com/)
+This project is part of the **AWS Cloud Learning Series** — educational and open for reuse under MIT License.

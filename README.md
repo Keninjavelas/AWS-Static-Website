@@ -1,6 +1,6 @@
 # ☁️ AWS Static Website Deployment – Phase 1 & 2
 
-![Screenshot](./Screen.png)
+![Screenshot](./Screenshot.png)
 
 ---
 

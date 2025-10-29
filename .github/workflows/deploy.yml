@@ -1,10 +1,9 @@
-~~~{"variant":"standard","title":"deploy.yml with Auto Version + Timestamp Update","id":"71245"}
-name: Deploy to S3 + CloudFront Invalidation (Versioned + Timestamp)
+name: Deploy to S3 + CloudFront
 
 on:
   push:
     branches:
-      - main  # change to 'master' if your repo uses that
+      - main
 
 jobs:
   deploy:
@@ -19,7 +18,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: us-east-1  # change if your bucket is in another region
+          aws-region: us-east-1
 
       - name: Sync files to S3
         run: |
@@ -30,26 +29,3 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id E1IV4CZ586FDEG \
             --paths "/*"
-
-      - name: Bump version tag
-        run: |
-          git fetch --tags
-          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          new_tag=$(echo $latest_tag | awk -F. -v OFS=. '{$NF++;print}')
-          git tag $new_tag
-          git push origin $new_tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update README with timestamp
-        run: |
-          ts=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          sed -i "s|Last deployed:.*|Last deployed: $ts|g" README.md || echo "Last deployed: $ts" >> README.md
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add README.md
-          git commit -m "Update deployment timestamp: $ts" || echo "No changes to commit"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-~~~

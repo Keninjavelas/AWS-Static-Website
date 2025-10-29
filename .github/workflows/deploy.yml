@@ -1,3 +1,4 @@
+~~~{"variant":"standard","title":"deploy.yml - Cleaned Up Version","id":"85932"}
 name: Deploy to S3 + CloudFront Invalidation
 
 on:
@@ -24,8 +25,9 @@ jobs:
         run: |
           aws s3 sync . s3://my-first-aws-site-aryan --delete --exclude ".git/*" --exclude ".github/*"
 
-      - name: Create CloudFront cache invalidation
+      - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation \
             --distribution-id E1IV4CZ586FDEG \
             --paths "/*"
+~~~

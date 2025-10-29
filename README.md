@@ -1,133 +1,166 @@
-# ☁️ AWS Static Website Deployment — End-to-End Project (Phases 1–3)
+# ☁️ AWS Cloud Static Website Project
 
-## 📘 Overview
+### 🚀 Project Overview
 
-This project demonstrates how to build, host, and monitor a **secure, scalable, and cost-efficient static website** on AWS — all within the **free tier**.
-It’s part of a long-term learning journey toward mastering **AWS Cloud Engineering** and building a professional cloud portfolio.
-
----
-
-## 🏗️ Architecture Summary
-
-| Phase       | Focus                                | AWS Services Used                          | Key Skills                       |
-| ----------- | ------------------------------------ | ------------------------------------------ | -------------------------------- |
-| **Phase 1** | Hosting a Static Website             | S3, Route53 (optional)                     | Website hosting, bucket policies |
-| **Phase 2** | Global Content Delivery & Automation | CloudFront, GitHub Actions, IAM            | CDN, HTTPS, CI/CD pipeline       |
-| **Phase 3** | Monitoring & Resiliency              | CloudFront Logs, S3 Versioning, CloudWatch | Logging, versioning, metrics     |
+This project demonstrates how to **deploy, secure, and automate a static website using AWS services** — all within the AWS Free Tier.
+It showcases a complete DevOps-style workflow, from hosting and caching to CI/CD automation and security hardening.
 
 ---
 
-# 🧩 Phase 3 — Monitoring, Logging & Versioning
-
-## 📊 Overview
-
-Phase 3 introduces observability and resiliency to our AWS static website architecture.
-We’ve added **CloudFront access logging**, **S3 versioning**, and **metrics monitoring** to ensure visibility, traceability, and recovery capabilities.
-
----
-
-## ⚙️ Features Implemented
-
-### **1️⃣ CloudFront Access Logging**
-
-* Created a dedicated **log bucket** (`my-first-aws-site-logs`) for storing access logs.
-* Configured a **Standard Log Destination** in CloudFront to deliver `.gz` log files automatically to the log bucket.
-* Added optional log prefix: `cloudfront-logs/`
-* Disabled **Real-Time Logs** (paid feature) to stay within free-tier limits.
-
-**Result:**
-Traffic and request data are now recorded in the logs bucket for analysis and audits.
-
----
-
-### **2️⃣ S3 Versioning**
-
-Enabled versioning for both S3 buckets:
-
-* ✅ `my-first-aws-site-aryan` (main static website)
-* ✅ `my-first-aws-site-logs` (log storage)
-
-**Benefit:**
-Every object change is preserved as a new version.
-You can restore previous versions of files if they’re accidentally modified or deleted.
-
----
-
-### **3️⃣ Monitoring & Metrics**
-
-* Accessed **CloudFront → Monitoring tab** to view metrics such as:
-
-  * Requests count
-  * Data transferred
-  * 4xx/5xx error rates
-  * Cache hit ratio
-* Linked CloudFront metrics to **CloudWatch** for deeper insights.
-
-**Screenshots:**
-
-![Metrics Dashboard](./Metrics.png)
-![Setup Screenshot](./Screenshot.png)
-
----
-
-## 🧠 Lessons Learned
-
-* CloudFront’s **Logging tab** is now separate in the new AWS console.
-* Choose **Amazon S3 (not S3 Legacy)** when creating access log destinations.
-* Real-time logs are optional and cost extra; standard logs are perfect for free-tier setups.
-* S3 versioning adds rollback safety and enhances operational reliability.
-
----
-
-## ✅ Phase 3 Summary
-
-| Component          | Status    | Notes                              |
-| ------------------ | --------- | ---------------------------------- |
-| CloudFront Logging | ✅ Enabled | Logs to `my-first-aws-site-logs`   |
-| S3 Versioning      | ✅ Enabled | Both main & logs buckets           |
-| Metrics Monitoring | ✅ Active  | CloudFront & CloudWatch integrated |
-
----
-
-## 🧾 Repository Structure
+## 📂 Folder Structure
 
 ```
+.
 ├── index.html
-├── styles.css
-├── scripts.js
+├── style.css
+├── 404.html
+├── 403.html
 ├── Screen.png
-├── Metrics.png
 ├── Screenshot.png
-├── .github/
-│   └── workflows/
-│       └── deploy.yml
-├── README.md
+├── Metrics.png
+└── README.md
 ```
 
 ---
 
-## 🚀 What’s Next — Phase 4
+## 🧩 Technologies Used
 
-The next step focuses on **security and automation**:
-
-* Implementing **IAM hardening**
-* Setting up **CloudFront OAI/OAC** for secure bucket access
-* Adding **AWS WAF** for protection from common attacks
-* Optionally integrating automated security scans in the pipeline
-
----
-
-## 💡 Skills Demonstrated
-
-* AWS S3 Website Hosting
-* CloudFront Distribution & Caching
-* CI/CD via GitHub Actions
-* Access Logging & Monitoring
-* Infrastructure Hardening
-* Cost Optimization (Free Tier Compliance)
+* **Amazon S3** — Website hosting + versioning
+* **AWS CloudFront** — Global CDN caching + HTTPS
+* **AWS Certificate Manager** — SSL/TLS certificate for HTTPS
+* **AWS IAM** — GitHub Actions deployment user with restricted permissions
+* **GitHub Actions** — Automated CI/CD pipeline to S3 + CloudFront
+* **Amazon CloudWatch** — Monitoring & alarms for distribution health
+* **AWS Cost Explorer (Free Tier)** — Budget tracking
+* **AWS Response Headers Policy** — Security hardening via HTTP headers
 
 ---
 
-## 📜 License
+## 🏗️ Phase-by-Phase Breakdown
 
-This project is part of the **AWS Cloud Learning Series** — educational and open for reuse under MIT License.
+### **Phase 1 – S3 Static Website Hosting**
+
+* [x] Created an S3 bucket (`my-first-aws-site-aryan`)
+* [x] Uploaded website files (`index.html`, `style.css`)
+* [x] Configured static website hosting and tested public access
+* [x] Verified via:
+  `http://my-first-aws-site-aryan.s3-website-us-east-1.amazonaws.com`
+
+---
+
+### **Phase 2 – CloudFront CDN Integration**
+
+* [x] Connected S3 bucket to CloudFront for faster, secure global delivery
+* [x] Configured caching behavior and automatic invalidation
+* [x] Deployed the distribution successfully
+* [x] Final CloudFront URL:
+  `https://d78vjzv8z61e6.cloudfront.net`
+
+---
+
+### **Phase 3 – Monitoring and Logging**
+
+* [x] Enabled **S3 access logs** → separate logging bucket
+* [x] Configured **CloudFront access logs** for request tracking
+* [x] Set up **CloudWatch metrics and alarms** for status checks
+* [x] Email alerts enabled via SNS subscription
+* [x] Pinned CloudFront & CloudWatch to AWS Console favorites
+
+📸 *Metrics Screenshot:*
+![Metrics](Metrics.png)
+
+---
+
+### **Phase 4 – CI/CD Pipeline Integration**
+
+* [x] Created a dedicated IAM user (`github-deploy-user`) with minimal permissions
+* [x] Added AWS credentials as GitHub Secrets
+* [x] Automated website deployment via GitHub Actions on every push to `main`
+* [x] Automatic CloudFront invalidation for new updates
+
+**GitHub Actions workflow (`.github/workflows/deploy.yml`):**
+
+```yaml
+name: Deploy to S3 + CloudFront
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+
+      - name: Sync files to S3
+        run: |
+          aws s3 sync . s3://my-first-aws-site-aryan --delete --exclude ".git/*" --exclude ".github/*"
+
+      - name: Create CloudFront cache invalidation
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E1IV4CZ586FDEG \
+            --paths "/*"
+```
+
+
+---
+
+### **Phase 5 – Security, Error Handling & Optimization**
+
+* [x] Created custom **403.html** and **404.html** error pages
+* [x] Configured CloudFront to use these pages for friendly responses
+* [x] Added a **custom Response Headers Policy** for enhanced security:
+
+  * `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+  * `X-Frame-Options: DENY`
+  * `X-Content-Type-Options: nosniff`
+  * `Referrer-Policy: same-origin`
+  * `Permissions-Policy: geolocation=(), microphone=(), camera=()`
+  * `Content-Security-Policy: default-src 'self';`
+* [x] Verified via browser network tab → headers applied correctly
+
+📸 *Security Screenshot:*
+![Security](Screenshot.png)
+
+---
+
+## 🌍 Live Deployment
+
+**Current Website URL:**
+`https://d78vjzv8z61e6.cloudfront.net`
+
+---
+
+## 💡 Key Learnings
+
+* Hosting static websites with **S3 + CloudFront** is simple yet powerful.
+* Automating deployment pipelines with **GitHub Actions** improves workflow efficiency.
+* CloudWatch monitoring ensures visibility, and proper IAM policies enhance security.
+* Response header policies and error customization make a project feel production-ready.
+
+---
+
+## 🚀 Future Enhancements
+
+* [ ] Add a **custom domain** via Route 53
+* [ ] Implement **Lambda@Edge or CloudFront Functions** for lightweight logic
+* [ ] Integrate **AWS WAF** for web attack filtering
+* [ ] Add **cost alerts** via AWS Budgets for production scaling
+
+---
+
+## 🧠 Author
+
+**Aryan Kapoor**
+AWS Cloud Foundations Project (Free Tier Version)

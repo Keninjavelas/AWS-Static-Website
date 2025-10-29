@@ -162,5 +162,5 @@ jobs:
 
 ## 🧠 Author
 
-**Aryan Kapoor**
+**Aryan Kapoor**,
 AWS Cloud Foundations Project (Free Tier Version)
